@@ -55,7 +55,6 @@ jobs:
       - name: Completion message
         run: |
           Write-Host "Sync completed successfully."
-
           
   # deploy-prod:
   #   if: github.ref == 'refs/heads/main'
