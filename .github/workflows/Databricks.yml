@@ -14,15 +14,15 @@ jobs:
     steps:
       - name: Check if Databricks CLI is installed
         id: check-databricks-cli
+        shell: pwsh
         run: |
-          if ! command -v databricks &> /dev/null
-          then
-            echo "Databricks CLI not found, installing..."
+          if (-not (Get-Command databricks -ErrorAction SilentlyContinue)) {
+            Write-Host "Databricks CLI not found, installing..."
             Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-            Databricks --version
-          else
-            echo "Databricks CLI is already installed."
-          fi
+            databricks -v
+          } else {
+            Write-Host "Databricks CLI is already installed."
+          }
 
   # deploy-prod:
   #   if: github.ref == 'refs/heads/main'
