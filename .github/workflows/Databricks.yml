@@ -24,14 +24,15 @@ jobs:
 
       - name: Authenticate Dev Databricks Workspace
         run: |
-          mkdir -p ~/.databricks  # Create the directory if it doesn't exist
-          cat << EOF > ~/.databrickscfg
+          New-Item -ItemType Directory -Force -Path $env:USERPROFILE\.databricks
+          @"
           [DEFAULT]
           host = https://adb-2990609490919825.5.azuredatabricks.net
           token = dapi121fb6bd3b99b53941513362eb45ec3b-3
-          EOF
-          chmod 600 ~/.databrickscfg
+          "@ | Out-File -FilePath "$env:USERPROFILE\.databrickscfg" -Encoding utf8
+          icacls "$env:USERPROFILE\.databrickscfg" /inheritance:r /grant:r "$env:USERNAME`:F"
           databricks auth profiles
+
 
         
 
