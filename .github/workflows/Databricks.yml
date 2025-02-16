@@ -46,19 +46,16 @@ jobs:
             exit 1
           }
 
-      - name: Sync Notebooks folder to Databricks Workspace
+      - name: Deploy notebooks to the Dev Databricks Workspace
         run: |
-          $localPath = "./Notebooks"
-          $remotePath = "/Workspace/Users/your-username/Notebooks"
-          Get-ChildItem -Path $localPath -Recurse | ForEach-Object {
-            if ($_.PSIsContainer) {
-              databricks sync "$($_.FullName)" "$remotePath/$($_.Name)"
-            }
-          }
-
-      - name: Completion message
-        run: |
-          Write-Host "Sync completed successfully."
+          $localPath = "$GITHUB_WORKSPACE"
+          echo "========="
+          echo $localPath
+          echo "========="
+          $remotePath = "/Workspace/Shared/"
+          echo "========="
+          echo $remotePath
+          echo "========="
           
   # deploy-prod:
   #   if: github.ref == 'refs/heads/main'
