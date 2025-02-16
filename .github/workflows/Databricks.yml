@@ -33,19 +33,21 @@ jobs:
           icacls "$env:USERPROFILE\.databrickscfg" /inheritance:r /grant:r "$env:USERNAME`:F"
           databricks auth profiles
 
-      - name: Deploy notebooks to the Dev Databricks Workspace
+      - name: Sync files with Databricks workspace
         run: |
-          $localPath = "$GITHUB_WORKSPACE"
+          # Define the local and remote directory paths
+          $localPath = "${{ github.workspace }}"
           $remotePath = "/Workspace/Shared/"
 
-          Get-ChildItem -Path $localPath -Recurse -File | Where-Object {
-            $_.FullName -notmatch "\.github|\.databricks|README.md"
-          } | ForEach-Object {
-            $filePath = $_.FullName
-            $relativePath = $filePath.Substring($localPath.Length).TrimStart('\')
-            $databricksRemotePath = "$remotePath/$relativePath" -replace "\\", "/"
+          # Recursively get all directories
+          Get-ChildItem -Path $localPath -Recurse -Directory | ForEach-Object {
+            $folderPath = $_.FullName
+            $relativePath = $folderPath.Substring($localPath.Length).TrimStart('\')
+            $databricksRemoteFolder = "$remotePath/$relativePath" -replace "\\", "/"
 
-            Write-Host "Syncing $filePath to $databricksRemotePath"
+            # Sync each folder with Databricks workspace
+            Write-Host "Syncing $folderPath with $databricksRemoteFolder"
+            databricks sync "$folderPath" "$databricksRemoteFolder"
           } 
 
            
