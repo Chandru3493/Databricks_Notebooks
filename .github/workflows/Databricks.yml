@@ -35,21 +35,18 @@ jobs:
 
       - name: Deploy notebooks to the Dev Databricks Workspace
         run: |
-          $localPath = "$GITHUB_WORKSPACE\Databricks"
+          $localPath = "${{ github.workspace }}/Databricks"
           $remotePath = "/Workspace/Shared/"
-
-          if (-Not (Test-Path $localPath)) {
-            Write-Host "Databricks folder does not exist. Exiting..."
+          if (-Not (Test-Path -Path $localPath -PathType Container)) {
+            Write-Host "Databricks folder does not exist at $localPath. Exiting..."
             exit 1
           }
-
           Get-ChildItem -Path $localPath -Recurse -File | Where-Object {
             $_.FullName -notmatch "\.github|\.databricks|README.md"
           } | ForEach-Object {
             $filePath = $_.FullName
             $relativePath = $filePath.Substring($localPath.Length).TrimStart('\')
             $databricksRemotePath = "$remotePath/$relativePath" -replace "\\", "/"
-
             Write-Host "Syncing $filePath to $databricksRemotePath"
             databricks workspace import --file "$filePath" "$databricksRemotePath" --overwrite
           }
