@@ -38,9 +38,6 @@ jobs:
           Remove-Item -Path Databricks_Notebooks -Recurse -Force
           git clone --branch Dev https://github.com/Chandru3493/Databricks_Notebooks.git
           cd Databricks_Notebooks
-          Remove-Item -Path .git  -Recurse -Force
-          Remove-Item -Path .github  -Recurse -Force
-          Remove-Item -Path README.md  -Recurse -Force
           
       # - name: Synchronize Local folder with databricks
       #   run: |
