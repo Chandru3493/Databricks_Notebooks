@@ -13,8 +13,6 @@ jobs:
 
     steps:
       - name: Check if Databricks CLI is installed
-        id: check-databricks-cli
-        shell: pwsh
         run: |
           if (-not (Get-Command databricks -ErrorAction SilentlyContinue)) {
             Write-Host "Databricks CLI not found, installing..."
