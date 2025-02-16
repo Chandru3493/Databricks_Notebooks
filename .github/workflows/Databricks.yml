@@ -35,20 +35,20 @@ jobs:
 
       - name: Sync files with Databricks workspace
         run: |
-          # Define the local and remote directory paths
-          $localPath = "${{ github.workspace }}"
+          $localPath = "$GITHUB_WORKSPACE"
           $remotePath = "/Workspace/Shared/"
 
-          # Recursively get all directories
-          Get-ChildItem -Path $localPath -Recurse -Directory | ForEach-Object {
-            $folderPath = $_.FullName
-            $relativePath = $folderPath.Substring($localPath.Length).TrimStart('\')
-            $databricksRemoteFolder = "$remotePath/$relativePath" -replace "\\", "/"
+          Get-ChildItem -Path $localPath -Recurse -File | Where-Object {
+            $_.FullName -notmatch "\.github|\.databricks|README.md"
+          } | ForEach-Object {
+            $filePath = $_.FullName
+            $relativePath = $filePath.Substring($localPath.Length).TrimStart('\')
+            $databricksRemotePath = "$remotePath/$relativePath" -replace "\\", "/"
 
-            # Sync each folder with Databricks workspace
-            Write-Host "Syncing $folderPath with $databricksRemoteFolder"
-            databricks sync "$folderPath" "$databricksRemoteFolder"
-          } 
+            Write-Host "Syncing $filePath to $databricksRemotePath"
+            databricks workspace import --file "$filePath" "$databricksRemotePath" --overwrite
+          }
+
 
            
   # deploy-prod:
