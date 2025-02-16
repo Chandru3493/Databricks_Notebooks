@@ -40,7 +40,12 @@ jobs:
           Remove-Item -Path .git  -Recurse -Force
           Remove-Item -Path .github  -Recurse -Force
           Remove-Item -Path README.md  -Recurse -Force
-
+          
+      - name: Synchronize Local folder with databricks
+        run: |
+          $remotePath = "/Workspace/Shared/"
+          pwd
+          
 
   # deploy-prod:
   #   if: github.ref == 'refs/heads/main'
