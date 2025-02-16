@@ -44,10 +44,8 @@ jobs:
           
       - name: Synchronize Local folder with databricks
         run: |
-          $remotePath = "/Workspace/Shared/"
           cd Databricks_Notebooks
-          pwd
-          dir
+          databricks sync Databricks_Notebooks /Workspace/Shared/
           
 
   # deploy-prod:
