@@ -33,44 +33,6 @@ jobs:
           icacls "$env:USERPROFILE\.databrickscfg" /inheritance:r /grant:r "$env:USERNAME`:F"
           databricks auth profiles
 
-      name: Databricks Deployment
-
-on:
-  push:
-    branches:
-      - Dev
-      - main
-
-jobs:
-  deploy-Dev:
-    if: github.ref == 'refs/heads/Dev'
-    runs-on: self-hosted
-
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-
-      - name: Check if Databricks CLI is installed
-        run: |
-          if (-not (Get-Command databricks -ErrorAction SilentlyContinue)) {
-            Write-Host "Databricks CLI not found, installing..."
-            Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-            databricks -v
-          } else {
-            Write-Host "Databricks CLI is already installed."
-          }
-
-      - name: Authenticate Dev Databricks Workspace
-        run: |
-          New-Item -ItemType Directory -Force -Path $env:USERPROFILE\.databricks
-          @"
-          [DEFAULT]
-          host = https://adb-2990609490919825.5.azuredatabricks.net
-          token = dapi121fb6bd3b99b53941513362eb45ec3b-3
-          "@ | Out-File -FilePath "$env:USERPROFILE\.databrickscfg" -Encoding utf8
-          icacls "$env:USERPROFILE\.databrickscfg" /inheritance:r /grant:r "$env:USERNAME`:F"
-          databricks auth profiles
-
       - name: Deploy notebooks to the Dev Databricks Workspace
         run: |
           $localPath = "$GITHUB_WORKSPACE\Databricks"
