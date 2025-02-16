@@ -42,10 +42,10 @@ jobs:
           Remove-Item -Path .github  -Recurse -Force
           Remove-Item -Path README.md  -Recurse -Force
           
-      - name: Synchronize Local folder with databricks
-        run: |
-          cd Databricks_Notebooks
-          databricks sync Databricks /Workspace/Shared/
+      # - name: Synchronize Local folder with databricks
+      #   run: |
+      #     cd Databricks_Notebooks
+      #     databricks sync Databricks /Workspace/Shared/
           
 
   # deploy-prod:
