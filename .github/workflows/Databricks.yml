@@ -33,6 +33,9 @@ jobs:
           icacls "$env:USERPROFILE\.databrickscfg" /inheritance:r /grant:r "$env:USERNAME`:F"
           databricks auth profiles
 
+      - name: Authenticate Dev Databricks Workspace
+        run: |
+          databricks workspace mkdirs /Workspace/Shared/your-folder-name
 
         
 
