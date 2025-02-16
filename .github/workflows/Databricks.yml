@@ -35,7 +35,7 @@ jobs:
 
       - name: Fetch Notebooks folder
         run: |
-          if (Test-Path -Path "./Notebooks") {
+          if (Test-Path -Path "./Databricks") {
             Write-Host "Notebooks folder found."
           } else {
             Write-Host "Notebooks folder not found!"
