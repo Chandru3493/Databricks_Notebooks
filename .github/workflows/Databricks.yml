@@ -35,6 +35,10 @@ jobs:
 
       - name: Fetch Notebooks folder
         run: |
+          pwd
+          echo "========"
+          dir
+          echo "==========="
           if (Test-Path -Path "$GITHUB_WORKSPACE/Databricks") {
             Write-Host "Notebooks folder found."
           } else {
