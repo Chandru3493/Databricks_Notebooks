@@ -35,7 +35,17 @@ jobs:
 
       - name: Authenticate Dev Databricks Workspace
         run: |
-          databricks workspace mkdirs /Workspace/Shared/your-folder-name
+          $localPath = "$GITHUB_WORKSPACE"
+          $remotePath = "/Workspace/Shared/"
+
+          Get-ChildItem -Path $localPath -Recurse -Directory | ForEach-Object {
+            $folderPath = $_.FullName
+            $relativePath = $folderPath.Substring($localPath.Length).TrimStart('\')
+            $databricksRemotePath = "$remotePath/$relativePath" -replace "\\", "/"
+
+            Write-Host "Syncing $folderPath to $databricksRemotePath"
+            databricks sync "$folderPath" "$databricksRemotePath"
+          }
 
         
 
