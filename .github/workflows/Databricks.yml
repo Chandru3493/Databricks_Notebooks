@@ -33,16 +33,12 @@ jobs:
           icacls "$env:USERPROFILE\.databrickscfg" /inheritance:r /grant:r "$env:USERNAME`:F"
           databricks auth profiles
 
-      - name: Deploy notebooks to the Dev Databricks Workspace
+      - name: Download the repo Folder to Loacal workspace
         run: |
-          $localPath = "$GITHUB_WORKSPACE"
-          echo "========="
-          echo "The workspace is $GITHUB_WORKSPACE"
-          echo "========="
-          $remotePath = "/Workspace/Shared/"
-          echo "========="
-          echo $remotePath
-          echo "========="
+          Get-ChildItem -Path $localPath -Recurse -File | Where-Object {
+          $_.FullName -notmatch "\.github|\.databricks|README.md"
+          }
+
           
   # deploy-prod:
   #   if: github.ref == 'refs/heads/main'
