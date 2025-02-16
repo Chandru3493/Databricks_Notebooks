@@ -35,6 +35,7 @@ jobs:
 
       - name: Download the Files from Remote repo to Local workspace
         run: |
+          Remove-Item -Path Databricks_Notebooks -Recurse -Force
           git clone --branch Dev https://github.com/Chandru3493/Databricks_Notebooks.git
           cd Databricks_Notebooks
           Remove-Item -Path .git  -Recurse -Force
