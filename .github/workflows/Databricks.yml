@@ -37,7 +37,7 @@ jobs:
         run: |
           $localPath = "$GITHUB_WORKSPACE"
           echo "========="
-          echo $localPath
+          echo "The workspace is $GITHUB_WORKSPACE"
           echo "========="
           $remotePath = "/Workspace/Shared/"
           echo "========="
