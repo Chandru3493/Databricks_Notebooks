@@ -38,10 +38,10 @@ jobs:
           if (Test-Path -Path Databricks_Notebooks) {Remove-Item -Path Databricks_Notebooks -Recurse -Force}
           git clone --branch Dev https://github.com/Chandru3493/Databricks_Notebooks.git
           
-      # - name: Synchronize Local folder with databricks
-      #   run: |
-      #     cd Databricks_Notebooks
-      #     databricks sync Databricks /Workspace/Shared/
+      - name: Synchronize Local folder with databricks
+        run: |
+          cd Databricks_Notebooks
+          databricks sync Databricks /Workspace/Shared/
           
 
   # deploy-prod:
