@@ -47,7 +47,7 @@ jobs:
 
             Write-Host "Syncing $filePath to $databricksRemotePath"
             databricks workspace import --file "$filePath" "$databricksRemotePath" --overwrite
-          }
+          } 
         
 
   # deploy-prod:
