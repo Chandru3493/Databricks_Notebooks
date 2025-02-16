@@ -6,7 +6,7 @@ on:
       - Dev
       - main
 
-jobs:
+jobs: 
   deploy-Dev:
     if: github.ref == 'refs/heads/Dev'
     runs-on: self-hosted
@@ -33,27 +33,11 @@ jobs:
           icacls "$env:USERPROFILE\.databrickscfg" /inheritance:r /grant:r "$env:USERNAME`:F"
           databricks auth profiles
 
-      - name: Create .databricksignore
+      - name: Download the Files from Remote repo to Local workspace
         run: |
-          echo ".github/" >> .databricksignore
-          echo ".databricks/" >> .databricksignore
-          echo "README.md" >> .databricksignore
+          git init
+          git clone "https://github.com/Chandru3493/Databricks_Notebooks.git"
 
-      - name: Deploy notebooks to the Dev Databricks Workspace
-        run: |
-          $localPath = "$GITHUB_WORKSPACE"
-          $remotePath = "/Workspace/Shared/"
-
-          Get-ChildItem -Path $localPath -Recurse -File | Where-Object {
-            $_.FullName -notmatch "\.github|\.databricks|README.md"
-          } | ForEach-Object {
-            $filePath = $_.FullName
-            $relativePath = $filePath.Substring($localPath.Length).TrimStart('\')
-            $databricksRemotePath = "$remotePath/$relativePath" -replace "\\", "/"
-
-            Write-Host "Syncing $filePath to $databricksRemotePath"
-            databricks workspace import --file "$filePath" "$databricksRemotePath" --overwrite
-          }
 
   # deploy-prod:
   #   if: github.ref == 'refs/heads/main'
