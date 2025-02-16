@@ -35,11 +35,13 @@ jobs:
 
       - name: Download the repo Folder to Loacal workspace
         run: |
+          $localPath = "$GITHUB_WORKSPACE"
+          $remotePath = "/Workspace/Shared/"
           Get-ChildItem -Path $localPath -Recurse -File | Where-Object {
           $_.FullName -notmatch "\.github|\.databricks|README.md"
           }
 
-          
+           
   # deploy-prod:
   #   if: github.ref == 'refs/heads/main'
   #   runs-on: ubuntu-latest
