@@ -33,7 +33,12 @@ jobs:
           icacls "$env:USERPROFILE\.databrickscfg" /inheritance:r /grant:r "$env:USERNAME`:F"
           databricks auth profiles
 
-      - name: Authenticate Dev Databricks Workspace
+      - name: Create .databricksignore
+        run: |
+          echo ".databricks/" >> .databricksignore
+          echo ".databricks/**" >> .databricksignore
+
+      - name: Deploy notebooks to the Dev Databricks Workspace
         run: |
           $localPath = "$GITHUB_WORKSPACE"
           $remotePath = "/Workspace/Shared/"
@@ -46,7 +51,6 @@ jobs:
             Write-Host "Syncing $folderPath to $databricksRemotePath"
             databricks sync "$folderPath" "$databricksRemotePath"
           }
-
         
 
   # deploy-prod:
