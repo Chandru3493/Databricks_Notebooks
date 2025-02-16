@@ -11,21 +11,22 @@ jobs:
     if: github.ref == 'refs/heads/Dev'
     runs-on: self-hosted
 
-    env:
-      DATABRICKS_HOST: "https://adb-2990609490919825.5.azuredatabricks.net/"
-      DATABRICKS_TOKEN: "dapi121fb6bd3b99b53941513362eb45ec3b-3"
-
     steps:
-      - name: Print Hello World
-        run: echo "Hello World"
+      - name: Check if Databricks CLI is installed
+        id: check-databricks-cli
+        run: |
+          if ! command -v databricks &> /dev/null
+          then
+            echo "Databricks CLI not found, installing..."
+            Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+            Databricks --version
+          else
+            echo "Databricks CLI is already installed."
+          fi
 
   # deploy-prod:
   #   if: github.ref == 'refs/heads/main'
   #   runs-on: ubuntu-latest
-
-  #   env:
-  #     DATABRICKS_HOST: "https://adb-1444941199492748.8.azuredatabricks.net/"
-  #     DATABRICKS_TOKEN: "dapi9a2a4f9a9dfd07aa1503896d2c18bf6b-3"
 
   #   steps:
   #     - name: Checkout code
