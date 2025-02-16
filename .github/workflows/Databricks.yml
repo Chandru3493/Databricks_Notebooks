@@ -33,27 +33,30 @@ jobs:
           icacls "$env:USERPROFILE\.databrickscfg" /inheritance:r /grant:r "$env:USERNAME`:F"
           databricks auth profiles
 
-      - name: Deploy notebooks to the Dev Databricks Workspace
+      - name: Fetch Notebooks folder
         run: |
-          $localPath = "${{ github.workspace }}/Databricks"
-          $remotePath = "/Workspace/Shared/"
-          if (-Not (Test-Path -Path $localPath -PathType Container)) {
-            Write-Host "Databricks folder does not exist at $localPath. Exiting..."
+          if (Test-Path -Path "./Notebooks") {
+            Write-Host "Notebooks folder found."
+          } else {
+            Write-Host "Notebooks folder not found!"
             exit 1
           }
+
+      - name: Sync Notebooks folder to Databricks Workspace
+        run: |
+          $localPath = "./Notebooks"
+          $remotePath = "/Workspace/Users/your-username/Notebooks"
           Get-ChildItem -Path $localPath -Recurse | ForEach-Object {
-            $filePath = $_.FullName
-            $relativePath = $filePath.Substring($localPath.Length).TrimStart('\')
-            $databricksRemotePath = "$remotePath/$relativePath" -replace "\\", "/"
-            if (Test-Path -Path $filePath -PathType Leaf) {
-              Write-Host "Syncing file $filePath to $databricksRemotePath"
-              databricks workspace import --file "$filePath" "$databricksRemotePath" --overwrite
-            } elseif (Test-Path -Path $filePath -PathType Container) {
-              Write-Host "Syncing folder $filePath to $databricksRemotePath"
-              databricks workspace import_dir "$filePath" "$databricksRemotePath" --overwrite
+            if ($_.PSIsContainer) {
+              databricks sync "$($_.FullName)" "$remotePath/$($_.Name)"
             }
           }
 
+      - name: Completion message
+        run: |
+          Write-Host "Sync completed successfully."
+
+          
   # deploy-prod:
   #   if: github.ref == 'refs/heads/main'
   #   runs-on: ubuntu-latest
