@@ -22,6 +22,12 @@ jobs:
             Write-Host "Databricks CLI is already installed."
           }
 
+      - name: Authenticate Dev Databricks Workspace
+        run: |
+          databricks configure --host https://adb-2990609490919825.5.azuredatabricks.net/ --token dapi121fb6bd3b99b53941513362eb45ec3b-3
+          databricks workspace ls
+        
+
   # deploy-prod:
   #   if: github.ref == 'refs/heads/main'
   #   runs-on: ubuntu-latest
