@@ -41,14 +41,17 @@ jobs:
             Write-Host "Databricks folder does not exist at $localPath. Exiting..."
             exit 1
           }
-          Get-ChildItem -Path $localPath -Recurse -File | Where-Object {
-            $_.FullName -notmatch "\.github|\.databricks|README.md"
-          } | ForEach-Object {
+          Get-ChildItem -Path $localPath -Recurse | ForEach-Object {
             $filePath = $_.FullName
             $relativePath = $filePath.Substring($localPath.Length).TrimStart('\')
             $databricksRemotePath = "$remotePath/$relativePath" -replace "\\", "/"
-            Write-Host "Syncing $filePath to $databricksRemotePath"
-            databricks workspace import --file "$filePath" "$databricksRemotePath" --overwrite
+            if (Test-Path -Path $filePath -PathType Leaf) {
+              Write-Host "Syncing file $filePath to $databricksRemotePath"
+              databricks workspace import --file "$filePath" "$databricksRemotePath" --overwrite
+            } elseif (Test-Path -Path $filePath -PathType Container) {
+              Write-Host "Syncing folder $filePath to $databricksRemotePath"
+              databricks workspace import_dir "$filePath" "$databricksRemotePath" --overwrite
+            }
           }
 
   # deploy-prod:
