@@ -35,20 +35,13 @@ jobs:
 
       - name: Download the Files from Remote repo to Local workspace
         run: |
-          # if (Test-Path -Path Databricks_Notebooks) {Remove-Item -Path Databricks_Notebooks -Recurse -Force}
-          # git clone --branch Dev https://github.com/Chandru3493/Databricks_Notebooks.git
-          if (Test-Path -Path Databricks_Notebooks) {
-            Set-Location -Path Databricks_Notebooks
-            git pull origin Dev
-            Set-Location -Path ..
-          } else {
-            git clone --branch Dev https://github.com/Chandru3493/Databricks_Notebooks.git
-          }
+          if (Test-Path -Path Databricks_Notebooks) {Remove-Item -Path Databricks_Notebooks -Recurse -Force}
+          git clone --branch Dev https://github.com/Chandru3493/Databricks_Notebooks.git
           
       - name: Synchronize Local folder with databricks
         run: |
           cd Databricks_Notebooks
-          databricks sync Notebooks /Workspace/Shared/
+          databricks sync Notebooks /Workspace/Shared/ --full
           
 
   # deploy-prod:
