@@ -49,7 +49,7 @@ jobs:
       - name: Synchronize Local folder with databricks
         run: |
           cd Databricks_Notebooks
-          databricks sync Notebooks /Workspace/Shared/ --full
+          databricks sync Notebooks /Workspace/Shared/
           
 
   # deploy-prod:
