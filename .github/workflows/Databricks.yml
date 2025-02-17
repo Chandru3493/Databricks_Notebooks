@@ -16,7 +16,12 @@ jobs:
         run: |
           if (-not (Get-Command databricks -ErrorAction SilentlyContinue)) {
             Write-Host "Databricks CLI not found, installing..."
-            Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+            if (Get-Command choco -ErrorAction SilentlyContinue) {
+                Write-Host "Chocolatey already installed"
+            } else {
+                Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+            }
+            choco install databricks-cli
             databricks -v
           } else {
             Write-Host "Databricks CLI is already installed."
