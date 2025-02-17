@@ -35,8 +35,16 @@ jobs:
 
       - name: Download the Files from Remote repo to Local workspace
         run: |
-          if (Test-Path -Path Databricks_Notebooks) {Remove-Item -Path Databricks_Notebooks -Recurse -Force}
-          git clone --branch Dev https://github.com/Chandru3493/Databricks_Notebooks.git
+          # if (Test-Path -Path Databricks_Notebooks) {Remove-Item -Path Databricks_Notebooks -Recurse -Force}
+          if (Test-Path "Databricks_Notebooks") {
+          Write-Host "Folder exists. Pulling latest changes..."
+          Set-Location Databricks_Notebooks
+          git pull origin Dev
+          Set-Location ..
+          } else {
+            Write-Host "Folder does not exist. Cloning the repository..."
+            git clone --branch Dev https://github.com/Chandru3493/Databricks_Notebooks.git
+          }
           
       - name: Synchronize Local folder with databricks
         run: |
